@@ -73,6 +73,40 @@ class App extends Component {
       alert("not valid and right side 3");
 
   };
+
+  validateOr = () => {
+    // Left Side.
+    var reg = new RegExp('[^()A-Z][()]*|');
+    let stringa = this.state.formula;
+    if(reg.test(stringa))
+      alert("not valid or left side 1");
+    
+    reg = new RegExp('[^()ft]+[()]*[A-Z][()]*|');
+    stringa = this.state.formula;
+    if(reg.test(stringa))
+      alert("not valid or left side 2");
+
+    reg = new RegExp('[^()!&|>-][()]*[ft][()]*[A-Z][()]*|');
+    stringa = this.state.formula;
+    if(reg.test(stringa))
+      alert("not valid or left side 3");
+
+    // Right Side.
+    reg = new RegExp('|[()!]*[^()!ft]');
+    stringa = this.state.formula;
+    if(reg.test(stringa))
+      alert("not valid or right side 1");
+
+    reg = new RegExp('|[()!]*[ft][()]*[^()A-Z]');
+    stringa = this.state.formula;
+    if(reg.test(stringa))
+      alert("not valid or right side 2");
+    
+    reg = new RegExp('|[()!]*[ft][()]*[A-Z][()]*[^()&|>-]');
+    stringa = this.state.formula;
+    if(reg.test(stringa))
+      alert("not valid or right side 3");
+  };
   validateAll = () => {
     this.validateNot();
     this.validateAnd();
@@ -88,7 +122,7 @@ class App extends Component {
           <td>
             <TextField
               id="outlined-name"
-              label="Check not"
+              label="Check"
               margin="normal"
               variant="outlined"
               onChange={this.cambia('formula')}
