@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
@@ -93,7 +92,40 @@ class App extends Component {
   validateAll = () => {
     if(!(this.validateNot() && this.validateSomething('&') && this.validateSomething('|') && this.validateSomething('>') && this.validateSomething('-'))) {
       alert("Formula non valida!");
+      return;
     }
+    if(!this.checkBrackets()) {
+      alert("Invalid brackets pattern!")
+      return;
+    }
+    this.brackets();
+  };
+  checkBrackets = () => {
+    let open = (this.state.formula.match(new RegExp('[(]','g') || [])).length;
+    let close = (this.state.formula.match(new RegExp('[)]','g') || [])).length;
+    if(open !== close)
+      return false;
+
+    return true;
+  };
+  brackets = () => {
+    var temp = this.state.formula; 
+    var match = temp.match(/[tf][A-Z]/g);
+    var stringa = "";
+    let i = 0;
+    alert(match);
+    if(match !== null) {
+        while (match[i] !== undefined) {
+          let some = match[i];
+          let index = temp.indexOf(some);
+          stringa += temp.substring(0, index) + '(' + some + ')';
+          temp = temp.substring(index + some.length);
+          i++;
+        }    
+    }
+    stringa += temp;
+    // Non funziona setState?
+    this.setState({formula: [stringa]});
   };
   cambia = (name) => event => {
     this.setState({[name]: event.target.value});
