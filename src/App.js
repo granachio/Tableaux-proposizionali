@@ -6,6 +6,9 @@ class App extends Component {
   state = {
     formula: '',
   };
+  componentDidMount() {
+    setInterval(this.updateDiv, 1000);
+  }
   validateNot = () => {
     var reg = new RegExp('[^()&|>-][()]*!')
     let stringa = this.state.formula;
@@ -113,7 +116,6 @@ class App extends Component {
     var match = temp.match(/[tf][A-Z]/g);
     var stringa = "";
     let i = 0;
-    alert(match);
     if(match !== null) {
         while (match[i] !== undefined) {
           let some = match[i];
@@ -124,8 +126,10 @@ class App extends Component {
         }    
     }
     stringa += temp;
-    // Non funziona setState?
-    this.setState({formula: [stringa]});
+    this.setState((state) => ({formula: stringa}));
+  };
+  updateDiv = () => {
+    document.getElementById("formula").innerHTML = this.state.formula;
   };
   cambia = (name) => event => {
     this.setState({[name]: event.target.value});
@@ -148,6 +152,11 @@ class App extends Component {
         <tr>
           <td>
             <Button variant="outlined" onClick={this.validateAll}>Click</Button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div id="formula"></div>
           </td>
         </tr>
       </table>
