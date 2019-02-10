@@ -39,77 +39,47 @@ class App extends Component {
     } */
   };
 
-  validateAnd = () => {
+  validateSomething = (symbol) => {
+    symbol = '[' + symbol + ']';
     // Left Side.
-    var reg = new RegExp('[^()A-Z][()]*&');
+    var reg = new RegExp('[^()A-Z][()]*' + symbol);
     let stringa = this.state.formula;
     if(reg.test(stringa))
-      alert("not valid and left side 1");
+      alert("not valid " + symbol + " left side 1");
     
-    reg = new RegExp('[^()ft]+[()]*[A-Z][()]*&');
+    reg = new RegExp('[^()ft]+[()]*[A-Z][()]*'+ symbol);
     stringa = this.state.formula;
     if(reg.test(stringa))
-      alert("not valid and left side 2");
+      alert("not valid " + symbol + " left side 2");
 
-    reg = new RegExp('[^()!&|>-][()]*[ft][()]*[A-Z][()]*&');
+    reg = new RegExp('[^()!&|>-][()]*[ft][()]*[A-Z][()]*' + symbol);
     stringa = this.state.formula;
     if(reg.test(stringa))
-      alert("not valid and left side 3");
+      alert("not valid " + symbol + " left side 3");
 
     // Right Side.
-    reg = new RegExp('&[()!]*[^()!ft]');
+    reg = new RegExp(symbol + '[()!]*[^()!ft]');
     stringa = this.state.formula;
     if(reg.test(stringa))
-      alert("not valid and right side 1");
+      alert("not valid " + symbol + " right side 1");
 
-    reg = new RegExp('&[()!]*[ft][()]*[^()A-Z]');
+    reg = new RegExp(symbol + '[()!]*[ft][()]*[^()A-Z]');
     stringa = this.state.formula;
     if(reg.test(stringa))
-      alert("not valid and right side 2");
+      alert("not valid "+ symbol + " right side 2");
     
-    reg = new RegExp('&[()!]*[ft][()]*[A-Z][()]*[^()&|>-]');
+    reg = new RegExp(symbol + '[()!]*[ft][()]*[A-Z][()]*[^()&|>-]');
     stringa = this.state.formula;
     if(reg.test(stringa))
-      alert("not valid and right side 3");
+      alert("not valid " + symbol + " right side 3");
 
-  };
-
-  validateOr = () => {
-    // Left Side.
-    var reg = new RegExp('[^()A-Z][()]*|');
-    let stringa = this.state.formula;
-    if(reg.test(stringa))
-      alert("not valid or left side 1");
-    
-    reg = new RegExp('[^()ft]+[()]*[A-Z][()]*|');
-    stringa = this.state.formula;
-    if(reg.test(stringa))
-      alert("not valid or left side 2");
-
-    reg = new RegExp('[^()!&|>-][()]*[ft][()]*[A-Z][()]*|');
-    stringa = this.state.formula;
-    if(reg.test(stringa))
-      alert("not valid or left side 3");
-
-    // Right Side.
-    reg = new RegExp('|[()!]*[^()!ft]');
-    stringa = this.state.formula;
-    if(reg.test(stringa))
-      alert("not valid or right side 1");
-
-    reg = new RegExp('|[()!]*[ft][()]*[^()A-Z]');
-    stringa = this.state.formula;
-    if(reg.test(stringa))
-      alert("not valid or right side 2");
-    
-    reg = new RegExp('|[()!]*[ft][()]*[A-Z][()]*[^()&|>-]');
-    stringa = this.state.formula;
-    if(reg.test(stringa))
-      alert("not valid or right side 3");
   };
   validateAll = () => {
     this.validateNot();
-    this.validateAnd();
+    this.validateSomething('&');
+    this.validateSomething('|');
+    this.validateSomething('>');
+    this.validateSomething('-');
   };
   cambia = (name) => event => {
     this.setState({[name]: event.target.value});
