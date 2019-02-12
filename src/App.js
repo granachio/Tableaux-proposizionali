@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 class App extends Component {
   state = {
     formula: '',
+    valida: false
   };
   componentDidMount() {
     setInterval(this.updateDiv, 1000);
@@ -17,19 +18,19 @@ class App extends Component {
       return false;
     }
 
-    reg = new RegExp('![()]*[^()ft]');
+    reg = new RegExp('![()!]*[^!()ft]');
     if(reg.test(stringa)) {
       alert("not valid not 2");
       return false;
     }
 
-    reg = new RegExp('![()]*[tf][()]*[^()A-Z]');
+    reg = new RegExp('![()!]*[tf][()]*[^()A-Z]');
     if(reg.test(stringa)) {
       alert("not valid not 3");
       return false;
     }
 
-    reg = new RegExp('![()]*[tf][()]*[A-Z][()]*[^()&|>-]+');
+    reg = new RegExp('![()!]*[tf][()]*[A-Z][()]*[^()&|>-]+');
     if(reg.test(stringa)) {
       alert("not valid not 4");
       return false;
@@ -93,6 +94,10 @@ class App extends Component {
     return true;
   };
   validateAll = () => {
+    if(this.state.valida) {
+      alert("La formula è gia valida!");
+      return;
+    }
     if(!(this.validateNot() && this.validateSomething('&') && this.validateSomething('|') && this.validateSomething('>') && this.validateSomething('-'))) {
       alert("Formula non valida!");
       return;
@@ -101,6 +106,7 @@ class App extends Component {
       alert("Invalid brackets pattern!")
       return;
     }
+    this.setState({valida: true});
     this.brackets();
     setInterval(this.notResolve, 3000);
   };
@@ -141,22 +147,15 @@ class App extends Component {
             let verita = true;
             switch(some.charAt(2)) {
               case 'f':
-                verita = false;
+              verita = false;
               break;
               default:
               break;
             }
-            if(verita) {
-              let iof = temp.indexOf(some);
-              some = some.replace("t", "f");
-              support += temp.substring(0, iof) + some.substring(1);
-              temp = temp.substring(iof + some.length);
-            }else {
-              let iof = temp.indexOf(some);
-              some = some.replace("f", "t");
-              support += temp.substring(0, iof) + some.substring(1);
-              temp = temp.substring(iof + some.length);
-            }
+            let iof = temp.indexOf(some);
+            (verita) ? some = some.replace("t", "f") : some = some.replace("f", "t");
+            support += temp.substring(0, iof) + some.substring(1);
+            temp = temp.substring(iof + some.length);
           }
           i++;
         } 
@@ -168,7 +167,13 @@ class App extends Component {
     document.getElementById("formula").innerHTML = this.state.formula;
   };
   cambia = (name) => event => {
-    this.setState({[name]: event.target.value});
+    this.setState({[name]: event.target.value, valida: false});
+  };
+  handleKeyPress = (event) => {
+    // keyCode 13 === Enter
+    if(event.keyCode === 13) {
+      this.validateAll();
+    }
   };
   render() {
     return (
@@ -182,6 +187,7 @@ class App extends Component {
               margin="normal"
               variant="outlined"
               onChange={this.cambia('formula')}
+              onKeyUp={this.handleKeyPress}
             />
           </td>
         </tr>
