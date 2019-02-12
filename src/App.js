@@ -10,7 +10,7 @@ class App extends Component {
     setInterval(this.updateDiv, 1000);
   }
   validateNot = () => {
-    var reg = new RegExp('[^()&|>-][()]*!')
+    var reg = new RegExp('[^!()&|>-][()]*!')
     let stringa = this.state.formula;
     if(reg.test(stringa)) {
       alert("not valid not 1");
@@ -102,6 +102,7 @@ class App extends Component {
       return;
     }
     this.brackets();
+    setInterval(this.notResolve, 3000);
   };
   checkBrackets = () => {
     let open = (this.state.formula.match(new RegExp('[(]','g') || [])).length;
@@ -127,6 +128,41 @@ class App extends Component {
     }
     stringa += temp;
     this.setState((state) => ({formula: stringa}));
+  };
+  notResolve = () => {
+    let temp = this.state.formula;
+    var match = temp.match(/![(][tf][A-Z][)]/g);
+    var support = "";
+    let i = 0;
+    if(match !== null) {
+        while (match[i] !== undefined) {
+          let some = match[i];
+          if(some.length === 5) {
+            let verita = true;
+            switch(some.charAt(2)) {
+              case 'f':
+                verita = false;
+              break;
+              default:
+              break;
+            }
+            if(verita) {
+              let iof = temp.indexOf(some);
+              some = some.replace("t", "f");
+              support += temp.substring(0, iof) + some.substring(1);
+              temp = temp.substring(iof + some.length);
+            }else {
+              let iof = temp.indexOf(some);
+              some = some.replace("f", "t");
+              support += temp.substring(0, iof) + some.substring(1);
+              temp = temp.substring(iof + some.length);
+            }
+          }
+          i++;
+        } 
+    }
+    support += temp;
+    this.setState({formula: support});
   };
   updateDiv = () => {
     document.getElementById("formula").innerHTML = this.state.formula;
