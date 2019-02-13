@@ -136,16 +136,18 @@ class App extends Component {
     this.setState((state) => ({formula: stringa}));
   };
   notResolve = () => {
+    this.resolverForNot(/![(][tf][A-Z][)]/g, 2);
+  };
+  resolverForNot = (reg, charIndex) => {
     let temp = this.state.formula;
-    var match = temp.match(/![(][tf][A-Z][)]/g);
+    var match = temp.match(reg);
     var support = "";
     let i = 0;
     if(match !== null) {
         while (match[i] !== undefined) {
           let some = match[i];
-          if(some.length === 5) {
             let verita = true;
-            switch(some.charAt(2)) {
+            switch(some.charAt(charIndex)) {
               case 'f':
               verita = false;
               break;
@@ -156,12 +158,19 @@ class App extends Component {
             (verita) ? some = some.replace("t", "f") : some = some.replace("f", "t");
             support += temp.substring(0, iof) + some.substring(1);
             temp = temp.substring(iof + some.length);
-          }
           i++;
         } 
     }
     support += temp;
     this.setState({formula: support});
+  };
+  equalBrackets = (some) => {
+      let open = this.numberOccurences(some, new RegExp("[(]", "g"));
+      let close = this.numberOccurences(some, new RegExp("[)]", "g"));
+      return (open === close)?true:false;
+  };
+  numberOccurences = (some, rgxp) => {
+    return (some.match(rgxp) || []).length;
   };
   updateDiv = () => {
     document.getElementById("formula").innerHTML = this.state.formula;
