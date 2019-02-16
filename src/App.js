@@ -111,8 +111,8 @@ class App extends Component {
     setInterval(this.notResolve, 3000);
   };
   checkBrackets = () => {
-    let open = (this.state.formula.match(new RegExp('[(]','g') || [])).length;
-    let close = (this.state.formula.match(new RegExp('[)]','g') || [])).length;
+    let open = (this.state.formula.match(new RegExp('[(]','g')) || []).length;
+    let close = (this.state.formula.match(new RegExp('[)]','g')) || []).length;
     if(open !== close)
       return false;
 
@@ -136,27 +136,27 @@ class App extends Component {
     this.setState((state) => ({formula: stringa}));
   };
   notResolve = () => {
-    this.resolverForNot(/![(][tf][A-Z][)]/g, 2);
+    this.resolverForNot(/![(][tf][A-Z][)]/g);
+    this.resolverForNot(/![()][tf][()][A-Z][()]{2}/g);
   };
-  resolverForNot = (reg, charIndex) => {
+  resolverForNot = (reg) => {
     let temp = this.state.formula;
     var match = temp.match(reg);
     var support = "";
     let i = 0;
     if(match !== null) {
         while (match[i] !== undefined) {
-          let some = match[i];
+            let some = match[i];
             let verita = true;
-            switch(some.charAt(charIndex)) {
-              case 'f':
+            if(some.includes("f"))
               verita = false;
-              break;
-              default:
-              break;
-            }
+            
             let iof = temp.indexOf(some);
             (verita) ? some = some.replace("t", "f") : some = some.replace("f", "t");
-            support += temp.substring(0, iof) + some.substring(1);
+            let other =  this.deleteCharacter(some, /[(]/g);
+            other = this.deleteCharacter(other, /[)]/g);
+            other = this.deleteCharacter(other, /[!]/g);
+            support += temp.substring(0, iof) + other;
             temp = temp.substring(iof + some.length);
           i++;
         } 
@@ -171,6 +171,9 @@ class App extends Component {
   };
   numberOccurences = (some, rgxp) => {
     return (some.match(rgxp) || []).length;
+  };
+  deleteCharacter = (stringa, symbol) => {
+    return stringa.replace(symbol, '');
   };
   updateDiv = () => {
     document.getElementById("formula").innerHTML = this.state.formula;
